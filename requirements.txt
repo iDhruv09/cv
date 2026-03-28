@@ -8,3 +8,6 @@ plotly==5.17.0
 reportlab==4.0.7
 Pillow==10.0.1
 requests==2.31.0
+markdown-it-py==2.2.0
+rich==13.3.5
+pygments==2.15.1
