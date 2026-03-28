@@ -1,5 +1,4 @@
 import streamlit as st
-import cv2
 import tempfile
 import numpy as np
 from ultralytics import YOLO
@@ -11,20 +10,28 @@ import plotly.graph_objects as go
 from datetime import datetime
 import time
 import os
-import json
+import io
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image as RLImage, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch, cm
-from reportlab.pdfgen import canvas
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
-import io
-from PIL import Image
-import base64
+from reportlab.lib.units import inch
+from reportlab.lib.enums import TA_CENTER
 import matplotlib
 matplotlib.use('Agg')
 
+# Import OpenCV with fallback
+try:
+    import cv2
+except ImportError:
+    # If opencv-python-headless is installed, it will work
+    import cv2
+except Exception as e:
+    st.error(f"OpenCV import error: {e}")
+    st.info("Installing opencv-python-headless...")
+    import subprocess
+    subprocess.run(["pip", "install", "opencv-python-headless"])
+    import cv2
 # ---------------- CONFIG ---------------- #
 st.set_page_config(
     page_title="Smart Waste Sorting System",
