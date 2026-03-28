@@ -1,22 +1,40 @@
 import streamlit as st
-import os
 import sys
 import subprocess
+import os
 
-# Force OpenCV to be installed first
-try:
-    import cv2
-    print(f"OpenCV version: {cv2.__version__}")
-except ImportError:
-    st.warning("Installing OpenCV...")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python-headless==4.8.1.78", "--force-reinstall"])
-    import cv2
-    st.success("OpenCV installed successfully!")
+# ============================================
+# FIX: Ensure OpenCV is installed BEFORE importing ultralytics
+# ============================================
 
-# Now import ultralytics (which depends on cv2)
+def ensure_opencv():
+    """Install and import OpenCV before ultralytics loads"""
+    try:
+        import cv2
+        st.success(f"✅ OpenCV {cv2.__version__} loaded successfully")
+        return cv2
+    except ImportError:
+        with st.spinner("📦 Installing OpenCV... This may take a moment."):
+            try:
+                subprocess.check_call([
+                    sys.executable, "-m", "pip", "install", 
+                    "opencv-python-headless==4.8.1.78", 
+                    "--no-cache-dir", 
+                    "--quiet"
+                ])
+                import cv2
+                st.success("✅ OpenCV installed and loaded successfully!")
+                return cv2
+            except Exception as e:
+                st.error(f"❌ Failed to install OpenCV: {e}")
+                st.stop()
+
+# Install and import OpenCV FIRST
+cv2 = ensure_opencv()
+
+# Now it's safe to import other packages
 import tempfile
 import numpy as np
-from ultralytics import YOLO
 from collections import defaultdict
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -33,6 +51,17 @@ from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER
 import matplotlib
 matplotlib.use('Agg')
+
+# Now import ultralytics (which depends on cv2)
+try:
+    from ultralytics import YOLO
+    st.success("✅ AI Model loaded successfully!")
+except ImportError as e:
+    st.error(f"❌ Failed to import YOLO: {e}")
+    st.stop()
+except Exception as e:
+    st.error(f"❌ Error loading AI model: {e}")
+    st.stop()
 # ---------------- CONFIG ---------------- #
 st.set_page_config(
     page_title="Smart Waste Sorting System",
