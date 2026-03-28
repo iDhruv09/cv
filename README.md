@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # ♻️ Smart Waste Sorting System
 
 An AI-powered waste classification and sorting system for automated waste management, designed to support circular economy initiatives.
@@ -213,5 +213,4 @@ For questions or support, please contact:
 - Email: your.email@example.com
 - Project Link: https://github.com/yourusername/smart-waste-sorting
 =======
-# sss
->>>>>>> 29fc2945bf134b6b6592a66197ffdbae122dc244
+
