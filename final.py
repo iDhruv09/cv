@@ -1,4 +1,19 @@
 import streamlit as st
+import os
+import sys
+import subprocess
+
+# Force OpenCV to be installed first
+try:
+    import cv2
+    print(f"OpenCV version: {cv2.__version__}")
+except ImportError:
+    st.warning("Installing OpenCV...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python-headless==4.8.1.78", "--force-reinstall"])
+    import cv2
+    st.success("OpenCV installed successfully!")
+
+# Now import ultralytics (which depends on cv2)
 import tempfile
 import numpy as np
 from ultralytics import YOLO
@@ -9,7 +24,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import time
-import os
 import io
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
@@ -19,19 +33,6 @@ from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER
 import matplotlib
 matplotlib.use('Agg')
-
-# Import OpenCV with fallback
-try:
-    import cv2
-except ImportError:
-    # If opencv-python-headless is installed, it will work
-    import cv2
-except Exception as e:
-    st.error(f"OpenCV import error: {e}")
-    st.info("Installing opencv-python-headless...")
-    import subprocess
-    subprocess.run(["pip", "install", "opencv-python-headless"])
-    import cv2
 # ---------------- CONFIG ---------------- #
 st.set_page_config(
     page_title="Smart Waste Sorting System",
